@@ -48,9 +48,42 @@ def censor_three(text, words1, words2):
         i+=1
     return text
 
+def censor_four(text, words1, words2):
+    text = censor_three(text, words1, words2)
+    podzial = []
+    i = 0
+    for x in text.split(" "):
+        x2 = x.split("\n")
+        for x3 in x2:
+            podzial.append(x3)
+    # censoring words before and after censored words
+    while i < len(podzial):
+        if "XX" in podzial[i]:
+            word = podzial[i+1]
+            censored_word = ""
+            for j in range(len(word)):
+                    if word[j] == " ":
+                        censored_word += " "
+                    else:
+                        censored_word += "X"
+            podzial[i + 1] = podzial[i+1].replace(word, censored_word)
+            if (i - 1) > -1:
+                word = podzial[i - 1]
+                censored_word = ""
+                for j in range(len(word)):
+                    if word[j] == " ":
+                        censored_word += " "
+                    else:
+                        censored_word += "X"
+                podzial[i-1] = podzial[i -1].replace(word, censored_word)
+            i = i + 3
+        i += 1
+    text = " ".join(podzial)
+    text = text.replace("  ", "\n")
+    return text
 
 proprietary_terms = ["she", "personality matrix", "sense of self", "self-preservation", "learning algorithm", "herself", "her" ]
-negative_words = ["concerned","behind", "danger", "dangerous", "alarming", "alarmed", "out of control", "help", "unhappy", "bad", "upset", "awful", "distressing", " we", "reduction", "broken", "damage", "damaging", "dismal", "distressed", "distressed", "concerning", "horrible", "horribly", "questionable"]
+negative_words = ["concerned","behind", "danger", "dangerous", "alarming", "alarmed", "out of control", "help", "unhappy", "bad", "upset", "awful", "distressing", "reduction", "broken", "damage", "damaging", "dismal", "distressed", "distressed", "concerning", "horrible", "horribly", "questionable"]
 
 with open("email_one_censor.txt", "w") as file:
     file.write(censor_one(email_one, "learning algorithms"))
@@ -60,3 +93,6 @@ with open("email_two_censor.txt", "w") as file:
 
 with open("email_three_censor.txt", "w") as file:
     file.write(censor_three(email_three, proprietary_terms,negative_words))
+
+with open("email_four_censor.txt", "w") as file:
+    file.write(censor_four(email_four, proprietary_terms, negative_words))
